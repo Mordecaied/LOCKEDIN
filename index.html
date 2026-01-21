@@ -14,6 +14,7 @@
             --accent-orange: #F97316; /* Handler Theme */
             --accent-blue: #0EA5E9;   /* Sniper Theme */
             --accent-green: #10B981;  /* Finisher Theme */
+            --accent-red: #EF4444;    /* Alert/Important */
             
             --text-bright: #F8FAFC;   /* White text */
             --text-muted: #94A3B8;    /* Grey text */
@@ -97,10 +98,11 @@
         .card:hover { border-color: var(--text-muted); }
         .card.open .card-header { border-bottom: 1px solid var(--border-color); background: var(--bg-hover); }
 
-        /* Card Stripes for visual categorization */
+        /* Card Stripes */
         .stripe-orange { border-left: 4px solid var(--accent-orange); }
         .stripe-blue { border-left: 4px solid var(--accent-blue); }
         .stripe-green { border-left: 4px solid var(--accent-green); }
+        .stripe-white { border-left: 4px solid #fff; }
 
         .card-title-group { display: flex; flex-direction: column; }
         .card-title { font-weight: 800; font-size: 1.1rem; letter-spacing: 0.5px; }
@@ -129,7 +131,7 @@
         }
         .prog-arrow { color: var(--text-bright); font-weight: bold; margin: 0 5px; }
 
-        /* Badges for Pilot View */
+        /* Badges */
         .badge {
             display: inline-block; padding: 4px 10px; border-radius: 50px;
             font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 6px;
@@ -137,6 +139,17 @@
         .bg-orange { background: rgba(249, 115, 22, 0.15); color: var(--accent-orange); }
         .bg-blue { background: rgba(14, 165, 233, 0.15); color: var(--accent-blue); }
         .bg-green { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+        
+        /* Schedule Specific Styles */
+        .schedule-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid #1E293B;
+        }
+        .schedule-row:last-child { border-bottom: none; }
+        .date-box { font-weight: bold; color: var(--text-bright); }
+        .time-box { font-size: 0.9rem; color: var(--text-muted); margin-top: 2px; }
+        .status-confirmed { color: var(--accent-green); font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+        .status-tbd { color: var(--text-muted); font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
 
         .footer-version { text-align: center; color: #334155; font-size: 0.7rem; margin-top: 20px; }
 
@@ -163,6 +176,43 @@
             </div>
 
             <div class="card-group">
+                
+                <div class="card stripe-white" style="border-color: var(--text-bright);">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <div class="card-title-group">
+                            <span class="badge" style="background:white; color:black;">LIVE SCHEDULE</span>
+                            <span class="card-title">UPCOMING SESSIONS</span>
+                        </div>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                    <div class="card-body" style="max-height: 500px;"><div class="body-content">
+                        
+                        <div class="schedule-row">
+                            <div>
+                                <div class="date-box">SESSION 1: SAT, JAN 24</div>
+                                <div class="time-box">Time: TBD @ Location TBD</div>
+                            </div>
+                            <div class="status-confirmed">CONFIRMED</div>
+                        </div>
+
+                        <div class="schedule-row">
+                            <div>
+                                <div class="date-box">SESSION 2: SAT, JAN 31</div>
+                                <div class="time-box">Time: TBD @ Location TBD</div>
+                            </div>
+                            <div class="status-confirmed">CONFIRMED</div>
+                        </div>
+
+                        <div class="schedule-row">
+                            <div>
+                                <div class="date-box">REMAINING SESSIONS</div>
+                                <div class="time-box">Dates released monthly</div>
+                            </div>
+                            <div class="status-tbd">TBD</div>
+                        </div>
+
+                    </div></div>
+                </div>
                 <div class="card stripe-orange">
                     <div class="card-header" onclick="toggleCard(this)">
                         <div class="card-title-group">
@@ -277,7 +327,7 @@
             </div>
         </section>
 
-        <div class="footer-version">App Version 2.0</div>
+        <div class="footer-version">App Version 2.1</div>
 
     </main>
 
