@@ -57,6 +57,7 @@
             text-transform: uppercase; border-radius: 8px; cursor: pointer;
             transition: all 0.3s ease;
         }
+        /* ORANGE BACKGROUND means ACTIVE/SELECTED */
         .toggle-btn.active {
             background: var(--accent-orange); color: var(--bg-main);
             box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
@@ -137,6 +138,8 @@
         .bg-blue { background: rgba(14, 165, 233, 0.15); color: var(--accent-blue); }
         .bg-green { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
 
+        .footer-version { text-align: center; color: #334155; font-size: 0.7rem; margin-top: 20px; }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700;900&display=swap" rel="stylesheet">
@@ -146,8 +149,8 @@
     <header class="app-header">
         <div class="brand">LOCKED IN</div>
         <div class="nav-toggles">
-            <button class="toggle-btn active" onclick="switchView('pilot-view', this)">Essentials Pilot</button>
-            <button class="toggle-btn" onclick="switchView('summer-view', this)">Full Summer Program</button>
+            <button id="btn-pilot" class="toggle-btn active" onclick="switchView('pilot-view', this)">Essentials Pilot</button>
+            <button id="btn-summer" class="toggle-btn" onclick="switchView('summer-view', this)">Full Summer Program</button>
         </div>
     </header>
 
@@ -194,7 +197,7 @@
                     </div></div>
                 </div>
 
-                 <div class="card stripe-green">
+                <div class="card stripe-green">
                     <div class="card-header" onclick="toggleCard(this)">
                         <div class="card-title-group">
                             <span class="badge bg-green">Finishing Block</span>
@@ -237,10 +240,6 @@
                         <ul class="skill-list">
                             <li>Progression: Static Lunge <span class="prog-arrow">→</span> Scissor <span class="prog-arrow">→</span> Figure 8 <span class="prog-arrow">→</span> Walking Tween <span class="prog-arrow">→</span> Stop & Go <span class="prog-arrow">→</span> Snatch <span class="prog-arrow">→</span> Alley 1v1</li>
                         </ul>
-                        <h4>Skill C: The Behind (Angles)</h4>
-                        <ul class="skill-list">
-                            <li>Progression: Pendulum <span class="prog-arrow">→</span> Wrap <span class="prog-arrow">→</span> Curry Slide <span class="prog-arrow">→</span> Weave <span class="prog-arrow">→</span> Snatch Back <span class="prog-arrow">→</span> Gauntlet</li>
-                        </ul>
                     </div></div>
                 </div>
 
@@ -256,14 +255,6 @@
                         <h4 style="color:var(--accent-blue)">Skill A: The Base (Feet)</h4>
                         <ul class="skill-list">
                             <li>Progression: Line Hops <span class="prog-arrow">→</span> "1-2" Step <span class="prog-arrow">→</span> The Hop <span class="prog-arrow">→</span> Chair Shooting <span class="prog-arrow">→</span> Pivot Shooting <span class="prog-arrow">→</span> Drift & Set</li>
-                        </ul>
-                        <h4 style="color:var(--accent-blue)">Skill B: The Pocket (Hands)</h4>
-                        <ul class="skill-list">
-                            <li>Progression: Blind Seam Find <span class="prog-arrow">→</span> "L" Check <span class="prog-arrow">→</span> The Dip <span class="prog-arrow">→</span> Pocket Catches <span class="prog-arrow">→</span> Hesi Pull-up</li>
-                        </ul>
-                        <h4 style="color:var(--accent-blue)">Skill C: The Release (Arc)</h4>
-                        <ul class="skill-list">
-                            <li>Progression: Shadow Shooting <span class="prog-arrow">→</span> Phone Booth <span class="prog-arrow">→</span> Swish Only <span class="prog-arrow">→</span> Catch & Fire (0.5s) <span class="prog-arrow">→</span> Pressure Cooker</li>
                         </ul>
                     </div></div>
                 </div>
@@ -281,43 +272,32 @@
                         <ul class="skill-list">
                             <li>Progression: Air Layups <span class="prog-arrow">→</span> Mikan <span class="prog-arrow">→</span> The Seal <span class="prog-arrow">→</span> Pad Work <span class="prog-arrow">→</span> Euro Step <span class="prog-arrow">→</span> Traffic (1v2)</li>
                         </ul>
-                        <h4 style="color:var(--accent-green)">Skill B: Contact & Creativity</h4>
-                        <ul class="skill-list">
-                            <li>Focus: Initiating contact, The Veer Step, Reverse layups, High glass spins.</li>
-                        </ul>
                     </div></div>
                 </div>
             </div>
         </section>
 
+        <div class="footer-version">App Version 2.0</div>
+
     </main>
 
     <script>
-        // --- VIEW SWITCHER LOGIC ---
         function switchView(viewId, btnElement) {
-            // Hide all views
             document.querySelectorAll('.program-view').forEach(view => {
                 view.classList.remove('active');
             });
-            // Deactivate all buttons
             document.querySelectorAll('.toggle-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
 
-            // Show selected view & activate button
             document.getElementById(viewId).classList.add('active');
             btnElement.classList.add('active');
         }
 
-        // --- ACCORDION LOGIC (SMOOTH OPEN/CLOSE) ---
         function toggleCard(headerElement) {
             const card = headerElement.parentElement;
             const body = card.querySelector('.card-body');
-
-            // Toggle open class
             card.classList.toggle('open');
-
-            // Handle smooth height transition
             if (card.classList.contains('open')) {
                 body.style.maxHeight = body.scrollHeight + "px";
             } else {
