@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LOCKED IN | Training Hub</title>
+    <style>
+        :root {
+            /* --- COLOR PALETTE --- */
+            --bg-main: #020617;       /* Deepest Navy/Black */
+            --bg-card: #111827;       /* Card Background */
+            --bg-hover: #1F2937;      /* Lighter Hover State */
+            
+            --accent-orange: #F97316; /* Handler Theme */
+            --accent-blue: #0EA5E9;   /* Sniper Theme */
+            --accent-green: #10B981;  /* Finisher Theme */
+            
+            --text-bright: #F8FAFC;   /* White text */
+            --text-muted: #94A3B8;    /* Grey text */
+            --border-color: #1E293B;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Roboto Condensed', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-bright);
+            margin: 0; padding: 0;
+            line-height: 1.5;
+        }
+
+        /* --- STICKY HEADER & NAV --- */
+        .app-header {
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .brand {
+            text-align: center; font-weight: 900; font-size: 1.4rem; 
+            letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase;
+            background: linear-gradient(to right, #fff, #94A3B8);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* Segmented Control Toggles */
+        .nav-toggles {
+            display: flex; background: var(--bg-card);
+            padding: 4px; border-radius: 12px; border: 1px solid var(--border-color);
+            max-width: 500px; margin: 0 auto;
+        }
+        .toggle-btn {
+            flex: 1; padding: 12px; border: none; background: none;
+            color: var(--text-muted); font-weight: 700; font-size: 0.9rem;
+            text-transform: uppercase; border-radius: 8px; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .toggle-btn.active {
+            background: var(--accent-orange); color: var(--bg-main);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
+
+        /* --- MAIN CONTAINER --- */
+        .container {
+            max-width: 800px; margin: 20px auto; padding: 0 20px 60px 20px;
+        }
+        .program-view { display: none; animation: fadeIn 0.4s ease-out; }
+        .program-view.active { display: block; }
+
+        /* --- HERO BANNERS --- */
+        .hero-banner {
+            padding: 25px; border-radius: 16px; margin-bottom: 25px;
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-main));
+            border: 1px solid var(--border-color);
+            position: relative; overflow: hidden;
+        }
+        .hero-summer { border-left: 5px solid var(--accent-orange); }
+        .hero-pilot { border-left: 5px solid var(--accent-green); }
+        
+        .hero-title { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0 0 5px 0; }
+        .hero-subtitle { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* --- MODERN ACCORDION CARDS --- */
+        .card-group { display: grid; gap: 15px; }
+        .card {
+            background: var(--bg-card); border-radius: 12px; overflow: hidden;
+            border: 1px solid var(--border-color); transition: all 0.3s ease;
+        }
+        .card-header {
+            padding: 18px 20px; cursor: pointer; display: flex;
+            justify-content: space-between; align-items: center;
+            background: var(--bg-card);
+        }
+        .card:hover { border-color: var(--text-muted); }
+        .card.open .card-header { border-bottom: 1px solid var(--border-color); background: var(--bg-hover); }
+
+        /* Card Stripes for visual categorization */
+        .stripe-orange { border-left: 4px solid var(--accent-orange); }
+        .stripe-blue { border-left: 4px solid var(--accent-blue); }
+        .stripe-green { border-left: 4px solid var(--accent-green); }
+
+        .card-title-group { display: flex; flex-direction: column; }
+        .card-title { font-weight: 800; font-size: 1.1rem; letter-spacing: 0.5px; }
+        .card-meta { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; font-weight: 500; }
+
+        .chevron { width: 24px; height: 24px; fill: var(--text-muted); transition: transform 0.3s; }
+        .card.open .chevron { transform: rotate(180deg); fill: var(--text-bright); }
+
+        /* Accordion Body */
+        .card-body {
+            max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
+            background: #0a0f1d; /* Slightly darker than card bg */
+        }
+        .body-content { padding: 25px; }
+
+        /* Content Styling */
+        h4 { color: var(--text-bright); margin: 20px 0 10px 0; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        h4:first-child { margin-top: 0; }
+        ul.skill-list { list-style: none; padding: 0; margin: 0; }
+        ul.skill-list li {
+            margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-muted); font-size: 0.95rem;
+        }
+        ul.skill-list li::before {
+            content: ''; position: absolute; left: 0; top: 8px; width: 6px; height: 6px;
+            background: var(--accent-orange); border-radius: 50%;
+        }
+        .prog-arrow { color: var(--text-bright); font-weight: bold; margin: 0 5px; }
+
+        /* Badges for Pilot View */
+        .badge {
+            display: inline-block; padding: 4px 10px; border-radius: 50px;
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 6px;
+        }
+        .bg-orange { background: rgba(249, 115, 22, 0.15); color: var(--accent-orange); }
+        .bg-blue { background: rgba(14, 165, 233, 0.15); color: var(--accent-blue); }
+        .bg-green { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="brand">LOCKEDIN</div>
+        <div class="nav-toggles">
+            <button class="toggle-btn active" onclick="switchView('summer-view', this)">Spring/Summer Full Program</button>
+            <button class="toggle-btn" onclick="switchView('pilot-view', this)">Essentials Pilot</button>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section id="summer-view" class="program-view active">
+            <div class="hero-banner hero-summer">
+                <div class="hero-title">Full Summer Ecosystem</div>
+                <div class="hero-subtitle">May – August | The complete 3-module roadmap.</div>
+            </div>
+
+            <div class="card-group">
+                <div class="card stripe-orange">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <div class="card-title-group">
+                            <span class="card-title">MAY: BALL HANDLING</span>
+                            <span class="card-meta">Module 1 | Manipulation & Shifting</span>
+                        </div>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                    <div class="card-body"><div class="body-content">
+                        <h4>Skill A: Crossover (Speed)</h4>
+                        <ul class="skill-list">
+                            <li>Progression: Wide Knee-to-Knee <span class="prog-arrow">→</span> The "V" <span class="prog-arrow">→</span> Walking Cross <span class="prog-arrow">→</span> Push Cross <span class="prog-arrow">→</span> Reaction Cross <span class="prog-arrow">→</span> Live 1v1</li>
+                        </ul>
+                        <h4>Skill B: The Tween (Protection)</h4>
+                        <ul class="skill-list">
+                            <li>Progression: Static Lunge <span class="prog-arrow">→</span> Scissor <span class="prog-arrow">→</span> Figure 8 <span class="prog-arrow">→</span> Walking Tween <span class="prog-arrow">→</span> Stop & Go <span class="prog-arrow">→</span> Snatch <span class="prog-arrow">→</span> Alley 1v1</li>
+                        </ul>
+                        <h4>Skill C: The Behind (Angles)</h4>
+                        <ul class="skill-list">
+                            <li>Progression: Pendulum <span class="prog-arrow">→</span> Wrap <span class="prog-arrow">→</span> Curry Slide <span class="prog-arrow">→</span> Weave <span class="prog-arrow">→</span> Snatch Back <span class="prog-arrow">→</span> Gauntlet</li>
+                        </ul>
+                    </div></div>
+                </div>
+
+                <div class="card stripe-blue">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <div class="card-title-group">
+                            <span class="card-title">JUNE: SHOOTING</span>
+                            <span class="card-meta">Module 2 | Mechanics & Power</span>
+                        </div>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                    <div class="card-body"><div class="body-content">
+                        <h4 style="color:var(--accent-blue)">Skill A: The Base (Feet)</h4>
+                        <ul class="skill-list">
+                            <li>Progression: Line Hops <span class="prog-arrow">→</span> "1-2" Step <span class="prog-arrow">→</span> The Hop <span class="prog-arrow">→</span> Chair Shooting <span class="prog-arrow">→</span> Pivot Shooting <span class="prog-arrow">→</span> Drift & Set</li>
+                        </ul>
+                        <h4 style="color:var(--accent-blue)">Skill B: The Pocket (Hands)</h4>
+                        <ul class="skill-list">
+                            <li>Progression: Blind Seam Find <span class="prog-arrow">→</span> "L" Check <span class="prog-arrow">→</span> The Dip <span class="prog-arrow">→</span> Pocket Catches <span class="prog-arrow">→</span> Hesi Pull-up</li>
+                        </ul>
+                        <h4 style="color:var(--accent-blue)">Skill C: The Release (Arc)</h4>
+                        <ul class="skill-list">
+                            <li>Progression: Shadow Shooting <span class="prog-arrow">→</span> Phone Booth <span class="prog-arrow">→</span> Swish Only <span class="prog-arrow">→</span> Catch & Fire (0.5s) <span class="prog-arrow">→</span> Pressure Cooker</li>
+                        </ul>
+                    </div></div>
+                </div>
+
+                <div class="card stripe-green">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <div class="card-title-group">
+                            <span class="card-title">AUGUST: FINISHING</span>
+                            <span class="card-meta">Module 3 | Contact & Pre-Season Prep</span>
+                        </div>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                    <div class="card-body"><div class="body-content">
+                        <h4 style="color:var(--accent-green)">Skill A: Footwork (Takeoff)</h4>
+                        <ul class="skill-list">
+                            <li>Progression: Air Layups <span class="prog-arrow">→</span> Mikan <span class="prog-arrow">→</span> The Seal <span class="prog-arrow">→</span> Pad Work <span class="prog-arrow">→</span> Euro Step <span class="prog-arrow">→</span> Traffic (1v2)</li>
+                        </ul>
+                        <h4 style="color:var(--accent-green)">Skill B: Contact & Creativity</h4>
+                        <ul class="skill-list">
+                            <li>Focus: Initiating contact, The Veer Step, Reverse layups, High glass spins.</li>
+                        </ul>
+                    </div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pilot-view" class="program-view">
+             <div class="hero-banner hero-pilot">
+                <div class="hero-title">The Essentials Pilot</div>
+                <div class="hero-subtitle">9-Session Intensive | The "Greatest Hits" curriculum.</div>
+            </div>
+
+            <div class="card-group">
+                <div class="card stripe-orange">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <div class="card-title-group">
+                            <span class="badge bg-orange">Handle Block</span>
+                            <span class="card-title">Sessions 1-3: The Engine</span>
+                        </div>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                    <div class="card-body"><div class="body-content">
+                        <ul class="skill-list">
+                            <li><strong>Session 1:</strong> Pivot Pressure & Crossovers</li>
+                            <li><strong>Session 2:</strong> Tweens & Protection</li>
+                            <li><strong>Session 3:</strong> Contact Handling (Physicality)</li>
+                        </ul>
+                    </div></div>
+                </div>
+
+                <div class="card stripe-blue">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <div class="card-title-group">
+                            <span class="badge bg-blue">Shooting Block</span>
+                            <span class="card-title">Sessions 4-6: The Mechanic</span>
+                        </div>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                    <div class="card-body"><div class="body-content">
+                         <ul class="skill-list">
+                            <li><strong>Session 4:</strong> Base & Pocket (Fixing the Dip)</li>
+                            <li><strong>Session 5:</strong> Release & Arc (Catch & Shoot)</li>
+                            <li><strong>Session 6:</strong> Game Speed (Off the Dribble)</li>
+                        </ul>
+                    </div></div>
+                </div>
+
+                 <div class="card stripe-green">
+                    <div class="card-header" onclick="toggleCard(this)">
+                        <div class="card-title-group">
+                            <span class="badge bg-green">Finishing Block</span>
+                            <span class="card-title">Sessions 7-9: Game Ready</span>
+                        </div>
+                        <svg class="chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </div>
+                    <div class="card-body"><div class="body-content">
+                         <ul class="skill-list">
+                            <li><strong>Session 7:</strong> Footwork & Takeoffs</li>
+                            <li><strong>Session 8:</strong> Contact & Veer Steps</li>
+                            <li><strong>Session 9 (Live):</strong> 3v3 "Unlock" Scrimmage Exam</li>
+                        </ul>
+                    </div></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- VIEW SWITCHER LOGIC ---
+        function switchView(viewId, btnElement) {
+            // Hide all views
+            document.querySelectorAll('.program-view').forEach(view => {
+                view.classList.remove('active');
+            });
+            // Deactivate all buttons
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected view & activate button
+            document.getElementById(viewId).classList.add('active');
+            btnElement.classList.add('active');
+        }
+
+        // --- ACCORDION LOGIC (SMOOTH OPEN/CLOSE) ---
+        function toggleCard(headerElement) {
+            const card = headerElement.parentElement;
+            const body = card.querySelector('.card-body');
+
+            // Toggle open class
+            card.classList.toggle('open');
+
+            // Handle smooth height transition
+            if (card.classList.contains('open')) {
+                body.style.maxHeight = body.scrollHeight + "px";
+            } else {
+                body.style.maxHeight = null;
+            }
+        }
+    </script>
+</body>
+</html>
